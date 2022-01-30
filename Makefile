@@ -4,23 +4,23 @@ DIR:= ./src
 # Windows
 ifeq ($(OS),Windows_NT)
 	CLEAN:= del build.exe test.exe
-	INCLUDE:= -I($(DIR)) -I($(DIR)/headers) -I($(DIR)/munit)
+	INCLUDE:= -I($(DIR)) -I($(DIR)/headers) -I($(DIR)/cpptest/src/headers)
 else
 	UNAME_S:= $(shell uname -s)
 # Linux
 	ifeq ($(UNAME_S),Linux)
 		CLEAN:= rm build test
-		INCLUDE:= -I/$(DIR) -I/$(DIR)/headers -I/$(DIR)/munit
+		INCLUDE:= -I/$(DIR) -I/$(DIR)/headers -I/$(DIR)/cpptest/src/headers
 	endif
 endif
 
 # Basic, universal flags
 SRC:= $(wildcard $(DIR)/headers/*.h $(DIR)/*.h $(DIR)/*.c $(DIR)/*.cpp)
 TESTS:= $(wildcard $(DIR)/tests/*.c $(DIR)/tests/*.cpp)
-MUNIT:= $(DIR)/munit/munit.c
+CPPTEST:= $(DIR)/cpptest/src/cpptest.cpp
 CFLAGS:= -Wall $(INCLUDE)
-BUILDFLAGS:= -DBUILD_MAIN
-TESTFLAGS:= -DTEST_MAIN
+BUILDFLAGS:= -DBUILD
+TESTFLAGS:= -DTEST
 
 all: $(SRC)
 	make build
@@ -29,7 +29,7 @@ all: $(SRC)
 build: $(SRC)
 	g++ -o $@ $^ $(CFLAGS) $(BUILDFLAGS)
 
-test: $(SRC) $(TESTS) $(MUNIT)
+test: $(SRC) $(TESTS) $(CPPTEST)
 	g++ -o $@ $^ $(CFLAGS) $(TESTFLAGS)
 
 fmt: $(SRC)
